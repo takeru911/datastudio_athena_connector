@@ -27,7 +27,7 @@ function transformDataStudioData(data, extractColumns){
   }
   
   for(var i = 1; i < data.length; i++){
-    var values = []
+    var values = [];
     for(var j = 0; j < targetColumn.length; j++){
       values.push(data[i][targetColumn[j]]);
     }
