@@ -285,7 +285,7 @@ var Athena = (function(){
         console.log(queryStatus)
         queryStatus = this.fetchQueryStatus(queryId);
         waitTime += 1000;
-        sleep(1000);
+        Utilities.sleep(1000);
       }
       
       if (queryStatus != "SUCCEEDED") {
