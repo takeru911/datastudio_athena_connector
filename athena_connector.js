@@ -75,7 +75,7 @@ function isAuthValid(){
   var access_key = userProperties.getProperty('aws_athena.access_key');
   var secret_key = userProperties.getProperty('aws_athena.secret_id');
   
-  return validateAuth();
+  return validateAuth(access_key, secret_key);
 }
 
 function validateAuth(access_key, secret_key){
