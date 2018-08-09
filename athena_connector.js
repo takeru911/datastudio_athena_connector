@@ -79,7 +79,7 @@ function isAuthValid(){
 }
 
 function validateAuth(access_key, secret_key){
-  Athena.init(access_key, secret_key);
+  Athena.init(access_key, secret_key, "us-east-1");
   if ("NamedQueryIds" in Athena.listNamedQueries()){
     return true;
   }
