@@ -19,10 +19,10 @@ function transformDataStudioData(data, extractColumns){
   var fixedData = [];
   var targetColumn = [];
   Logger.log(extractColumns);
-  for(var i = 0; i < data.length; i++){
-    var columnName = data[0][i];
-    if(extractColumns.indexOf(columnName) >= 0){
-      targetColumn.push(i);
+  var header = data[0];
+  for(var i = 0; i < extractColumns.length; i++){
+    if(header.indexOf(extractColumns[i]) >= 0){
+      targetColumn.push(header.indexOf(extractColumns[i]));
     }
   }
   
@@ -42,15 +42,17 @@ function transformDataStudioData(data, extractColumns){
 function setCredentials(request) {
   try {
     var key = request.key;
-        var accessKey = key.split("_")[0];
+    var accessKey = key.split("_")[0];
     var secretKey = key.split("_")[1];
         
     var userProperties = PropertiesService.getUserProperties();
     userProperties.setProperty('aws_athena.access_key', accessKey);
     userProperties.setProperty('aws_athena.secret_id', secretKey);
-    return {
+    response = {
       "errorCode": "NONE"
     };
+    console.log(response);
+    return response;
   }catch(e){
     logConnectorError(e, "sample");
     throwConnectorError("setCredentialError, ");
@@ -73,8 +75,9 @@ function isAuthValid(){
   var userProperties = PropertiesService.getUserProperties();
   var access_key = userProperties.getProperty('aws_athena.access_key');
   var secret_key = userProperties.getProperty('aws_athena.secret_id');
-
+  console.log("auth validation.");
   if(access_key == null || secret_key == null){
+    console.log("access_key or secret_key is not set.");
     return false;
   }
   
@@ -83,10 +86,13 @@ function isAuthValid(){
 
 function validateAuth(access_key, secret_key){
   Athena.init(access_key, secret_key, "us-east-1");
-  if ("NamedQueryIds" in Athena.listNamedQueries()){
+  var response = Athena.listNamedQueries();
+  console.log(response);
+  if ("NamedQueryIds" in response){
+    console.log("validation is succeeded.");
     return true;
   }
-  
+  console.log("validation is failed");
   return false;
 }
 
@@ -230,9 +236,10 @@ var Athena = (function(){
       }
       var d = new Date();
       var date = String(d.getUTCFullYear()) + addZero(d.getUTCMonth()+1) + addZero(d.getUTCDate());
-      var token = Utilities.base64Encode(queryString + outputLocation + date);
+      var token = Utilities.base64Encode(date + queryString + outputLocation);
+      var fixedToken = token.substring(0, 128)
       requestParameter = {
-        "ClientRequestToken": token,
+        "ClientRequestToken": fixedToken,
         "QueryExecutionContext": {
           "Database": executionDatabase
         },
@@ -242,7 +249,7 @@ var Athena = (function(){
         }
       };
       var responseText = AWS.request(serviceName, region, "StartQueryExecution",{}, "POST", requestParameter);
-      Logger.log(responseText);
+      console.log(responseText);
       var response = JSON.parse(responseText);
       var executionId = response["QueryExecutionId"];
       
@@ -278,6 +285,7 @@ var Athena = (function(){
         console.log(queryStatus)
         queryStatus = this.fetchQueryStatus(queryId);
         waitTime += 1000;
+        sleep(1000);
       }
       
       if (queryStatus != "SUCCEEDED") {
