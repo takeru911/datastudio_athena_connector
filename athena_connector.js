@@ -55,7 +55,6 @@ function setCredentials(request) {
     logConnectorError(e, "sample");
     throwConnectorError("setCredentialError, ");
   }
-  
 }
 
 function getAuthType(){
@@ -74,6 +73,10 @@ function isAuthValid(){
   var userProperties = PropertiesService.getUserProperties();
   var access_key = userProperties.getProperty('aws_athena.access_key');
   var secret_key = userProperties.getProperty('aws_athena.secret_id');
+
+  if(access_key == null || secret_key == null){
+    return false;
+  }
   
   return validateAuth(access_key, secret_key);
 }
