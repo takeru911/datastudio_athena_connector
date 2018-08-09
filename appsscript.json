@@ -1,0 +1,20 @@
+{
+  "timeZone": "Asia/Tokyo",
+  "dependencies": {
+    "libraries": [{
+      "userSymbol": "S3",
+      "libraryId": "1Qx-smYQLJ2B6ae7Pncbf_8QdFaNm0f-br4pbDg0DXsJ9mZJPdFcIEkw_",
+      "version": "3"
+    }]
+  },
+  "dataStudio": {
+    "name": "Athena Connector",
+    "logoUrl": "https://pbs.twimg.com/profile_images/880691857608634368/vybGC_Aw_400x400.png",
+    "company": "takeru911",
+    "companyUrl": "https://example.com",
+    "addonUrl": "https://github.com/takeru911/datastudio_athena_connector",
+    "supportUrl": "https://github.com/takeru911/datastudio_athena_connector",
+    "description": "Connect to AWS Athena"
+  },
+  "exceptionLogging": "STACKDRIVER"
+}
